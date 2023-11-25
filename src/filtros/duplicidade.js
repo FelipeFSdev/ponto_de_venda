@@ -1,4 +1,4 @@
-const knex = require("../conexao/banco de dados");
+const knex = require("../conexao/conexaopg");
 
 const verificarEmail = async (req, res, next) => {
     const { email } = req.body
