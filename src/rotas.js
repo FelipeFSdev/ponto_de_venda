@@ -16,6 +16,6 @@ rotas.post("/login", loginUsuario);
 rotas.use(verificaLogin)
 
 rotas.get("/usuario",);
-rotas.put("/usuario", verificarEmail, editarUsuario);
+rotas.put("/usuario", editarUsuario);
 
 module.exports = rotas;
