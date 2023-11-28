@@ -1,1 +1,1 @@
-module.exports = 'SegurancaDeSenha'
+module.exports = 'senhaSegura'
