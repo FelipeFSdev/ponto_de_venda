@@ -1,17 +1,21 @@
 const express = require('express');
 const verificarEmail = require('./filtros/duplicidade');
-const { cadastrarUsuario, loginUsuario } = require('./controladores/usuarios');
+const { cadastrarUsuario, loginUsuario, editarUsuario } = require('./controladores/usuarios');
 const listarCategorias = require('./controladores/categorias');
 const validarCampos = require('./filtros/verificarCampos');
-const verificarItensLogin = require('./filtros/verificarItensLogin');
+const verificaLogin = require('./filtros/verificaLogin');
+
 const rotas = express();
 
 rotas.use(express.json());
 
 rotas.get("/categoria", listarCategorias);
 rotas.post("/usuario", validarCampos, verificarEmail, cadastrarUsuario);
-rotas.post("/login", verificarItensLogin ,loginUsuario);
+rotas.post("/login", loginUsuario);
+
+rotas.use(verificaLogin)
+
 rotas.get("/usuario",);
-rotas.put("/usuario", validarCampos, verificarEmail, cadastrarUsuario);
+rotas.put("/usuario", verificarEmail, editarUsuario);
 
 module.exports = rotas;

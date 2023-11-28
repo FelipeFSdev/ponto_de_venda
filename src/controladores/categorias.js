@@ -3,7 +3,7 @@ const knex = require('../conexao/conexaopg');
 const listarCategorias = async (req, res) => {
 
     try {
-        const categorias = await knex('categorias').select('descricao');
+        const categorias = await knex("categorias").select("descricao");
         res.json(categorias);
 
     } catch (error) {
