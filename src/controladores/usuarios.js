@@ -89,13 +89,37 @@ const loginUsuario = async (req, res,) => {
             token
         });
 
+        
+
     } catch (error) {
         return res.status(500).json({ mensagem: "Erro interno do servidor." });
     }
 }
 
+const detalharUsuario = async (req, res) => {
+    const { id } = req.usuario
+    try {
+        const usuarioDetalhado = await knex("usuarios").where({ id }).first();
+        
+        if (!usuarioDetalhado){
+            return res.status(404).json("O usuário não foi encontrado");
+        }
+
+        return res.status(200).json({ usuario: usuarioDetalhado.nome, 
+        email: usuarioDetalhado.email,
+        
+    });
+
+    } catch (error) {
+        return res.status(400).json({ mensagem: "Erro interno do servidor." });
+    }
+
+    
+}
+
 module.exports = {
     cadastrarUsuario,
     editarUsuario,
-    loginUsuario
+    loginUsuario,
+    detalharUsuario
 }
