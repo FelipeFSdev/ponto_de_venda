@@ -11,6 +11,6 @@ rotas.get("/categoria", listarCategorias);
 rotas.post("/usuario", validarCampos, verificarEmail, cadastrarUsuario);
 rotas.post("/login",);
 rotas.get("/usuario",);
-rotas.put("/usuario",);
+rotas.put("/usuario", validarCampos, verificarEmail, cadastrarUsuario);
 
 module.exports = rotas;
