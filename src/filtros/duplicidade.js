@@ -2,7 +2,6 @@ const knex = require("../conexao/conexaopg");
 
 const verificarEmail = async (req, res, next) => {
     const { email } = req.body
-
     try {
         if (email) {
             const encontrarEmail = await knex("usuarios").where("email", email).first()
