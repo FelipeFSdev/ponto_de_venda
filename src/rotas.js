@@ -16,7 +16,8 @@ rotas.post("/login", loginUsuario);
 rotas.use(verificaLogin)
 
 rotas.get("/usuario", detalharUsuario);
-rotas.put("/usuario", editarUsuario);
+rotas.put("/usuario", validarCampos, editarUsuario);
+
 rotas.post("/produto",) //cadastrar produto
 rotas.put("/produto",) //editar produto
 rotas.get("/produto",) //listar produtos + detalhar produto
