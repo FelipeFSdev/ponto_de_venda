@@ -25,14 +25,6 @@ const cadastrarUsuario = async (req, res) => {
 const editarUsuario = async (req, res) => {
     const { nome, email, senha } = req.body;
     const { id } = req.usuario;
-    let senhaCriptografada;
-
-    if (!nome && !email && !senha) {
-        return res.status(400).json({ mensagem: "É obrigatório informar ao menos um campo para atualização." })
-    }
-    if (senha) {
-        senhaCriptografada = await bcrypt.hash(senha, 10);
-    }
 
     try {
         const usuarioExiste = await knex("usuarios").where({ id }).first();
@@ -40,14 +32,16 @@ const editarUsuario = async (req, res) => {
         if (!usuarioExiste) {
             return res.status(404).json({ mensagem: "Usuário não encontrado." })
         }
-        if (email) {
-            if (email !== req.usuario.email) {
-                const emailUsuarioExiste = await knex("usuarios").where({ email }).first();
-                if (emailUsuarioExiste) {
-                    return res.status(400).json({ mensagem: "O Email já existe." });
-                }
+
+        if (email !== req.usuario.email) {
+            const emailUsuarioExiste = await knex("usuarios").where({ email }).first();
+            if (emailUsuarioExiste) {
+                return res.status(400).json({ mensagem: "O Email já existe." });
             }
         }
+
+        const senhaCriptografada = await bcrypt.hash(senha, 10);
+
         await knex('usuarios').update({
             nome,
             email,
@@ -94,10 +88,30 @@ const loginUsuario = async (req, res,) => {
         return res.status(500).json({ mensagem: "Erro interno do servidor." });
     }
 }
+const detalharUsuario = async (req, res) => {
+    const { id } = req.usuario
+
+    try {
+        const usuarioDetalhado = await knex("usuarios").where({ id }).first();
+
+        if (!usuarioDetalhado) {
+            return res.status(404).json("O usuário não foi encontrado.");
+        }
+
+        return res.status(200).json({
+            usuario: usuarioDetalhado.nome,
+            email: usuarioDetalhado.email,
+        });
+
+    } catch (error) {
+        return res.status(400).json({ mensagem: "Erro interno do servidor." });
+    }
+}
 
 module.exports = {
     cadastrarUsuario,
     editarUsuario,
-    loginUsuario
-}
+    loginUsuario,
+    detalharUsuario,
 
+}
