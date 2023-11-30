@@ -16,6 +16,14 @@ rotas.post("/login", loginUsuario);
 rotas.use(verificaLogin)
 
 rotas.get("/usuario", detalharUsuario);
-rotas.put("/usuario", editarUsuario);
+rotas.put("/usuario", validarCampos, editarUsuario);
+
+rotas.post("/produto",) //cadastrar produto
+rotas.put("/produto",) //editar produto
+rotas.get("/produto",) //listar produtos + detalhar produto
+rotas.delete("/produto",) //excluir produto
+rotas.post("/cliente",) //cadastrar cliente
+rotas.put("/cliente",) //editar cliente
+rotas.get("/cliente",) //listar clientes + detalhar cliente
 
 module.exports = rotas;
