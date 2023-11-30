@@ -12,7 +12,6 @@ const verificarEmail = async (req, res, next) => {
         next();
 
     } catch (error) {
-        console.log("erro no duplicidade", error.message)
         return res.status(500).json({ mensagem: "Erro interno do servidor." });
     }
 

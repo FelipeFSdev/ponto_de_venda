@@ -1,5 +1,5 @@
-const validarCampos = (req, res, next) => {
-    const { nome, email, senha } = req.body;
+const validarCliente = (req, res, next) => {
+    const { nome, email, cpf } = req.body;
 
     if (!nome) {
         return res.status(400).json({ mensagem: "O campo nome é obrigatório." });
@@ -7,11 +7,11 @@ const validarCampos = (req, res, next) => {
     if (!email) {
         return res.status(400).json({ mensagem: "O campo email é obrigatório." });
     }
-    if (!senha) {
-        return res.status(400).json({ mensagem: "O campo senha é obrigatório." });
+    if (!cpf) {
+        return res.status(400).json({ mensagem: "O campo cpf é obrigatório." });
     }
 
     next();
 };
 
-module.exports = validarCampos
+module.exports = validarCliente;
