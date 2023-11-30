@@ -117,5 +117,6 @@ const detalharUsuario = async (req, res) => {
 module.exports = {
     cadastrarUsuario,
     loginUsuario,
-    detalharUsuario
+    detalharUsuario,
+    editarUsuario
 }
