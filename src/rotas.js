@@ -1,6 +1,6 @@
 const express = require('express');
 const { cadastrarUsuario, loginUsuario, editarUsuario, detalharUsuario } = require('./controladores/usuarios');
-const { editarProduto, detalharProduto, deletarProduto } = require('./controladores/produtos');
+const { editarProduto, detalharProduto, deletarProduto, cadastrarProduto } = require('./controladores/produtos');
 const listarCategorias = require('./controladores/categorias');
 const { editarCliente, detalharCliente } = require('./controladores/clientes');
 const { verificarEmail, verificarCpf } = require('./filtros/duplicidade');
@@ -24,7 +24,7 @@ rotas.use(verificaLogin);
 rotas.get("/usuario", detalharUsuario);
 rotas.put("/usuario", validarCampos, editarUsuario);
 
-rotas.post("/produto",) //cadastrar produto
+rotas.post("/produto", validarCamposProdutos, cadastrarProduto)
 rotas.put("/produto/:id", validarCamposProdutos, editarProduto);
 rotas.get("/produto",) //listar produtos 
 rotas.get("/produto/:id", detalharProduto) //detalhar produto
