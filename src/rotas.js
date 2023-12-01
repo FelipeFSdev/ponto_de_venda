@@ -4,6 +4,7 @@ const { cadastrarUsuario, loginUsuario, editarUsuario, detalharUsuario } = requi
 const listarCategorias = require('./controladores/categorias');
 const validarCampos = require('./filtros/verificarCampos');
 const verificaLogin = require('./filtros/verificaLogin');
+const { cadastrarProduto } = require('./controladores/produtos');
 
 const rotas = express();
 
@@ -18,7 +19,7 @@ rotas.use(verificaLogin)
 rotas.get("/usuario", detalharUsuario);
 rotas.put("/usuario", validarCampos, editarUsuario);
 
-rotas.post("/produto",) //cadastrar produto
+rotas.post("/produto", cadastrarProduto);
 rotas.put("/produto",) //editar produto
 rotas.get("/produto",) //listar produtos + detalhar produto
 rotas.delete("/produto",) //excluir produto
