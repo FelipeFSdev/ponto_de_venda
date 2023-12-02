@@ -1,8 +1,8 @@
 const express = require('express');
 const { cadastrarUsuario, loginUsuario, editarUsuario, detalharUsuario } = require('./controladores/usuarios');
-const { editarProduto, detalharProduto, deletarProduto, cadastrarProduto } = require('./controladores/produtos');
+const { editarProduto, detalharProduto, deletarProduto, cadastrarProduto, listarProdutos } = require('./controladores/produtos');
 const listarCategorias = require('./controladores/categorias');
-const { editarCliente, detalharCliente } = require('./controladores/clientes');
+const { editarCliente, detalharCliente, listarClientes, cadastrarCliente } = require('./controladores/clientes');
 const { verificarEmail, verificarCpf } = require('./filtros/duplicidade');
 const validarCampos = require('./filtros/verificarCampos');
 const verificaLogin = require('./filtros/verificaLogin');
@@ -26,13 +26,13 @@ rotas.put("/usuario", validarCampos, editarUsuario);
 
 rotas.post("/produto", validarCamposProdutos, cadastrarProduto)
 rotas.put("/produto/:id", validarCamposProdutos, editarProduto);
-rotas.get("/produto",) //listar produtos 
-rotas.get("/produto/:id", detalharProduto) //detalhar produto
-rotas.delete("/produto/:id", deletarProduto) //excluir produto
+rotas.get("/produto", listarProdutos)
+rotas.get("/produto/:id", detalharProduto)
+rotas.delete("/produto/:id", deletarProduto)
 
-rotas.post("/cliente",) //cadastrar cliente
+rotas.post("/cliente", validarCliente, verificarEmail, cadastrarCliente) //cadastrar cliente
 rotas.put("/cliente/:id", validarCliente, verificarCpf, editarCliente);
-rotas.get("/cliente",) //listar clientes  
-rotas.get("/cliente/:id", detalharCliente) //detalhar cliente
+rotas.get("/cliente", listarClientes)
+rotas.get("/cliente/:id", detalharCliente)
 
 module.exports = rotas;
