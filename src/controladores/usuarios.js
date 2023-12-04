@@ -46,7 +46,8 @@ const editarUsuario = async (req, res) => {
             nome,
             email,
             senha: senhaCriptografada
-        }).where({ id }).returning('*');
+        })
+            .where({ id }).returning('*');
 
         return res.status(204).send()
     } catch (error) {
@@ -87,7 +88,6 @@ const loginUsuario = async (req, res,) => {
         return res.status(500).json({ mensagem: "Erro interno do servidor." });
     }
 }
-
 const detalharUsuario = async (req, res) => {
     const { id } = req.usuario
 
