@@ -48,8 +48,28 @@ const cadastrarProduto = async (req, res) => {
     }
 }
 
+const listarProdutos = async (req, res) => {
+    
+    const { categoria_id } =  req.query;
+
+    try{
+
+        if(categoria_id){
+            const produto = await knex('produtos').where({ categoria_id })
+            return res.status(200).json(produto)
+        }
+        const produtos = await knex('produtos').select('*')
+
+
+            
+        return res.status(200).json(produtos)
+    } catch{
+    res.status(500).json({ message: "Erro interno do servidor"})                           
+    }
+}
 
 
 module.exports = {
-    cadastrarProduto
+    cadastrarProduto,
+    listarProdutos
 }
