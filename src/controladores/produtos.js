@@ -54,4 +54,11 @@ const editarProduto = async (req, res) => {
     }
 }
 
-module.exports = { cadastrarProduto, editarProduto }
+module.exports = {
+    editarProduto,
+    detalharProduto,
+    deletarProduto,
+    cadastrarProduto,
+    listarProdutos
+}
+

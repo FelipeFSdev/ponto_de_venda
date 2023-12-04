@@ -7,12 +7,7 @@ const editarCliente = async (req, res) => {
     try {
         const emailEncontrado = await knex("clientes").where({ email }).whereNot({ id }).first();
         if (emailEncontrado) {
-            return res.status(404).json({ mensagem: "O Email informado já existe." });
-        }
-
-        const cpfEncontrado = await knex("clientes").where({ cpf }).whereNot({ id }).first();
-        if (cpfEncontrado) {
-            return res.status(404).json({ mensagem: "O CPF informado já existe." });
+            return res.status(400).json({ mensagem: "O Email informado já existe." });
         }
 
         const cliente = await knex("clientes")
@@ -29,4 +24,51 @@ const editarCliente = async (req, res) => {
     }
 }
 
-module.exports = { editarCliente }
+const detalharCliente = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const cliente = await knex("clientes").where({ id }).first();
+        if (!cliente) {
+            return res.status(404).json({ mensagem: "Cliente não encontrado." });
+        }
+        return res.status(200).json(cliente);
+
+    } catch (error) {
+        return res.status(500).json({ mensagem: "Erro interno do servidor." })
+    }
+}
+const cadastrarCliente = async (req, res) => {
+    const { nome, email, cpf } = req.body;
+
+    try {
+        const cliente = await knex("clientes").insert({
+            nome,
+            email,
+            cpf,
+        }).returning(["nome", "email"]);
+
+        return res.status(201).json(cliente);
+    } catch (error) {
+        return res.status(500).json({ mensagem: "Erro interno do servidor." });
+    }
+};
+
+const listarClientes = async (req, res) => {
+    try {
+        const cliente = await knex("clientes");
+
+        res.status(200).json(cliente);
+
+    } catch (error) {
+        res.status(500).json({ mensagem: "Erro interno do servidor." });
+    }
+};
+
+module.exports = {
+    editarCliente,
+    detalharCliente,
+    cadastrarCliente,
+    listarClientes
+}
+
