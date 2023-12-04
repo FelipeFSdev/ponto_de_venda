@@ -23,9 +23,9 @@ const verificaLogin = async (req, res, next) => {
         const { senha: _, ...usuario } = usuarioExiste;
 
         req.usuario = usuario;
+
         next()
     } catch (error) {
-        console.log("erro no verificalogin", error.message)
         return res.status(500).json({ mensagem: "Erro interno do servidor." });
     }
 }
