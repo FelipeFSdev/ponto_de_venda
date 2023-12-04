@@ -22,15 +22,15 @@ rotas.use(verificaLogin);
 rotas.get("/usuario", detalharUsuario);
 rotas.put("/usuario", validarCampos, editarUsuario);
 
-rotas.post("/produto", validarCamposProdutos, cadastrarProduto)
+rotas.post("/produto", validarCamposProdutos, cadastrarProduto);
 rotas.put("/produto/:id", validarCamposProdutos, editarProduto);
-rotas.get("/produto", listarProdutos)
-rotas.get("/produto/:id", detalharProduto)
-rotas.delete("/produto/:id", deletarProduto)
+rotas.get("/produto", listarProdutos);
+rotas.get("/produto/:id", detalharProduto);
+rotas.delete("/produto/:id", deletarProduto);
 
-rotas.post("/cliente", validarCliente, verificarEmail, cadastrarCliente) //cadastrar cliente
+rotas.post("/cliente", validarCliente, verificarEmail, verificarCpf, cadastrarCliente);
 rotas.put("/cliente/:id", validarCliente, verificarCpf, editarCliente);
-rotas.get("/cliente", listarClientes)
-rotas.get("/cliente/:id", detalharCliente)
+rotas.get("/cliente", listarClientes);
+rotas.get("/cliente/:id", detalharCliente);
 
 module.exports = rotas;

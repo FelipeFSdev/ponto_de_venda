@@ -10,6 +10,9 @@ const validarCliente = (req, res, next) => {
     if (!cpf) {
         return res.status(400).json({ mensagem: "O campo cpf é obrigatório." });
     }
+    if (cpf.length !== 11) {
+        return res.status(400).json({ mensagem: "CPF inválido." });
+    }
 
     next();
 };
