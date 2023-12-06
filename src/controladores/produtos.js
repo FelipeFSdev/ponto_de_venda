@@ -14,11 +14,11 @@ const cadastrarProduto = async (req, res) => {
             quantidade_estoque,
             valor,
             categoria_id
-        }).returning(["descricao", "valor"]);
+        }).returning("*");
 
         return res.status(201).json(produto[0]);
     } catch (error) {
-        return res.status(500).json({ mensagem: "Erro interno do servidor." });
+        return res.status(400).json({ mensagem: error.message });
     }
 };
 
@@ -40,9 +40,9 @@ const editarProduto = async (req, res) => {
             return res.status(404).json({ mensagem: "Produto não encontrado." });
         }
 
-        return res.status(204).send()
+        return res.status(204).json()
     } catch (error) {
-        return res.status(500).json({ mensagem: "Erro interno do servidor." });
+        return res.status(400).json({ mensagem: error.message });
     }
 };
 
@@ -52,13 +52,16 @@ const listarProdutos = async (req, res) => {
     try {
         if (categoria_id) {
             const filtrarCategoria = await knex("produtos").where({ categoria_id });
+            if (!filtrarCategoria[0]) {
+                return res.status(404).json({ mensagem: "Categoria não encontrada." })
+            }
             return res.status(200).json(filtrarCategoria);
         }
         const produtos = await knex("produtos");
 
         return res.status(200).json(produtos);
     } catch (error) {
-        return res.status(500).json({ mensagem: "Erro interno do servidor." });
+        return res.status(400).json({ mensagem: error.message });
     }
 };
 
@@ -72,7 +75,7 @@ const detalharProduto = async (req, res) => {
         }
         return res.status(200).json(produto);
     } catch (error) {
-        return res.status(500).json({ mensagem: "Erro interno do servidor." });
+        return res.status(400).json({ mensagem: error.message });
     }
 };
 
@@ -86,7 +89,7 @@ const deletarProduto = async (req, res) => {
         }
         return res.status(204).json();
     } catch (error) {
-        return res.status(500).json({ mensagem: "Erro interno do servidor." });
+        return res.status(400).json({ mensagem: error.message });
     }
 };
 

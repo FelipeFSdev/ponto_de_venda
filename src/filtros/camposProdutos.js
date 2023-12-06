@@ -13,6 +13,12 @@ const validarCamposProdutos = (req, res, next) => {
     if (!categoria_id) {
         return res.status(400).json({ mensagem: "É necessário informar o id da categoria do produto." });
     }
+    if (valor < 0) {
+        return res.status(400).json({ mensagem: "Valor inválido. Insira um número maior que zero." });
+    }
+    if (quantidade_estoque < 0) {
+        return res.status(400).json({ mensagem: "Quantidade de estoque inválida. Insira um númerio maior que zero." });
+    }
 
     next();
 };
