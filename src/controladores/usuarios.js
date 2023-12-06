@@ -36,7 +36,7 @@ const editarUsuario = async (req, res) => {
         if (email !== req.usuario.email) {
             const emailUsuarioExiste = await knex("usuarios").where({ email }).first();
             if (emailUsuarioExiste) {
-                return res.status(400).json({ mensagem: "O Email já existe." });
+                return res.status(400).json({ mensagem: "O Email informado já existe." });
             }
         }
 
