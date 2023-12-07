@@ -83,11 +83,19 @@ const deletarProduto = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const deletar = await knex("produtos").delete().where({ id }).returning("*");
-        if (!deletar[0]) {
-            return res.status(404).json({ mensagem: "Produto não encontrado." });
+        const pedidoProduto = await knex("pedido_produtos").where({ produto_id: id }).first();
+        if (pedidoProduto) {
+            return res.status(400).json({
+                mensagem: "O produto não pode ser excluído pois está vinculado a um pedido"
+            });
+        } else {
+            const deletar = await knex("produtos").delete().where({ id }).returning("*");
+            if (!deletar[0]) {
+                return res.status(404).json({ mensagem: "Produto não encontrado." });
+            }
+            return res.status(204).json();
         }
-        return res.status(204).json();
+
     } catch (error) {
         return res.status(400).json({ mensagem: error.message });
     }
