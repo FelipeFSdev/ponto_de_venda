@@ -1,7 +1,9 @@
-const knex = require('../conexao/conexaopg');
+const knex = require('../servicos/conexaopg');
+const { upload, exclusao } = require('../servicos/uploads');
 
 const cadastrarProduto = async (req, res) => {
     const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
+    const { file } = req;
 
     try {
         const categoria = await knex("categorias").where({ id: categoria_id }).first();
@@ -9,11 +11,18 @@ const cadastrarProduto = async (req, res) => {
             return res.status(404).json("Categoria não encontrada.");
         }
 
+        let imagem = null;
+
+        if (file) {
+            imagem = await upload(file.originalname, file.buffer, file.mimetype)
+        }
+
         const produto = await knex("produtos").insert({
             descricao,
             quantidade_estoque,
             valor,
-            categoria_id
+            categoria_id,
+            produto_imagem: imagem ? imagem.url : imagem
         }).returning("*");
 
         return res.status(201).json(produto[0]);
@@ -25,11 +34,20 @@ const cadastrarProduto = async (req, res) => {
 const editarProduto = async (req, res) => {
     const { descricao, quantidade_estoque, valor, categoria_id } = req.body;
     const { id } = req.params;
+    const { file } = req;
 
     try {
         const categoriaEncontrada = await knex("categorias").where({ id: categoria_id }).first();
         if (!categoriaEncontrada) {
             return res.status(404).json({ mensagem: "Categoria não encontrada." });
+        }
+
+        if (file) {
+            imagem = await upload(file.originalname, file.buffer, file.mimetype)
+
+            await knex("produtos")
+                .update({ produto_imagem: imagem.url })
+                .where({ id }).returning('*');
         }
 
         const produto = await knex("produtos")
@@ -87,6 +105,13 @@ const deletarProduto = async (req, res) => {
         if (!deletar[0]) {
             return res.status(404).json({ mensagem: "Produto não encontrado." });
         }
+
+        if (deletar[0].produto_imagem) {
+            const formatarPath = deletar[0].produto_imagem.split("/")
+            const newPath = formatarPath.reverse()[0]
+            await exclusao(newPath)
+        }
+
         return res.status(204).json();
     } catch (error) {
         return res.status(400).json({ mensagem: error.message });

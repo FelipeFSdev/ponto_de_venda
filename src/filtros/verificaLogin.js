@@ -1,4 +1,4 @@
-const knex = require('../conexao/conexaopg');
+const knex = require('../servicos/conexaopg');
 const jwt = require('jsonwebtoken')
 const senhaJwt = require('../senhaJwt');
 
