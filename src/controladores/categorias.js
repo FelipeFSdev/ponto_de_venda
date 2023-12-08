@@ -1,4 +1,4 @@
-const knex = require('../conexao/conexaopg');
+const knex = require('../servicos/conexaopg');
 
 const listarCategorias = async (req, res) => {
 

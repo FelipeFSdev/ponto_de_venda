@@ -1,4 +1,4 @@
-const knex = require('../conexao/conexaopg');
+const knex = require('../servicos/conexaopg');
 const jwt = require('jsonwebtoken')
 const senhaJwt = require('../senhaJwt');
 
@@ -6,7 +6,7 @@ const verificaLogin = async (req, res, next) => {
     const { authorization } = req.headers
 
     if (!authorization) {
-        return res.status(401).json({ mensagem: "Usuário não autorizado." })
+        return res.status(401).json({ mensagem: "Usuário não autorizado." });
     }
 
     const token = authorization.replace('Bearer ', '').trim();
@@ -26,7 +26,7 @@ const verificaLogin = async (req, res, next) => {
 
         next()
     } catch (error) {
-        return res.status(500).json({ mensagem: "Erro interno do servidor." });
+        return res.status(400).json({ mensagem: error.message });
     }
 }
 
