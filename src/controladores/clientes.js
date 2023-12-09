@@ -10,7 +10,7 @@ const cadastrarCliente = async (req, res) => {
             cpf,
         }).returning("*");
 
-        return res.status(201).json(cliente);
+        return res.status(201).json(cliente[0]);
     } catch (error) {
         return res.status(500).json({ mensagem: "Erro interno do servidor." });
     }
