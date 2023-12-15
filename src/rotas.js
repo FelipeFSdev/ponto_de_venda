@@ -8,6 +8,8 @@ const validarCampos = require('./filtros/verificarCampos');
 const verificaLogin = require('./filtros/verificaLogin');
 const validarCamposProdutos = require('./filtros/camposProdutos');
 const validarCliente = require('./filtros/camposCliente');
+const validarCadastroPedidos = require('./filtros/validarCadastroPedidos');
+const { cadastrarPedido } = require('./controladores/pedidos');
 
 const rotas = express();
 
@@ -32,5 +34,7 @@ rotas.post("/cliente", validarCliente, verificarEmail, verificarCpf, cadastrarCl
 rotas.put("/cliente/:id", validarCliente, verificarCpf, editarCliente);
 rotas.get("/cliente", listarClientes);
 rotas.get("/cliente/:id", detalharCliente);
+
+rotas.post("/pedido", validarCadastroPedidos, cadastrarPedido);
 
 module.exports = rotas;
