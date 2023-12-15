@@ -9,7 +9,9 @@ const verificaLogin = require('./filtros/verificaLogin');
 const validarCamposProdutos = require('./filtros/camposProdutos');
 const validarCliente = require('./filtros/camposCliente');
 
-const multer = require('./filtros/multer');
+const multer = require('./servicos/multer');
+const { listarPedidos, cadastrarPedido } = require('./controladores/pedidos');
+const { validarCamposPedidos, validarProdutos } = require('./filtros/validarCadastroPedidos');
 
 const rotas = express();
 
@@ -34,5 +36,8 @@ rotas.post("/cliente", validarCliente, verificarEmail, verificarCpf, cadastrarCl
 rotas.put("/cliente/:id", validarCliente, verificarCpf, editarCliente);
 rotas.get("/cliente", listarClientes);
 rotas.get("/cliente/:id", detalharCliente);
+
+rotas.post("/pedido", validarCamposPedidos, validarProdutos, cadastrarPedido);
+rotas.get("/pedido", listarPedidos);
 
 module.exports = rotas;

@@ -85,7 +85,7 @@ const loginUsuario = async (req, res,) => {
         });
 
     } catch (error) {
-        return res.status(500).json({ mensagem: "Erro interno do servidor." });
+        return res.status(400).json({ mensagem: error.message });
     }
 }
 const detalharUsuario = async (req, res) => {
