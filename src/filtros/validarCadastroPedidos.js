@@ -1,0 +1,49 @@
+const knex = require("../servicos/conexaopg");
+
+const validarCamposPedidos = async (req, res, next) => {
+    const { cliente_id, pedido_produtos } = req.body;
+    const { quantidade_produto, produto_id } = pedido_produtos[0];
+
+    if (!cliente_id) {
+        return res.status(404).json({ mensagem: "É necessário informar o ID do cliente." });
+    }
+    if (!produto_id) {
+        return res.status(400).json({ mensagem: "É necessário informar o ID do produto." });
+    }
+    if (!quantidade_produto) {
+        return res.status(400).json({ mensagem: "É necessário informar a quantidade do produto." });
+    }
+    if (quantidade_produto < 0) {
+        return res.status(400).json({ mensagem: "Valor inválido. Insira um númerio maior que zero." })
+    }
+    next();
+};
+
+const validarProdutos = async (req, res, next) => {
+    const { pedido_produtos } = req.body;
+    const { quantidade_produto, produto_id } = pedido_produtos[0];
+
+    try {
+        const produtoPedido = await knex("produtos").where({ id: produto_id }).first();
+
+        if (!produtoPedido) {
+            return res.status(404).json("Produto não encontrado.");
+        }
+        if (quantidade_produto > produtoPedido.quantidade_estoque) {
+            return res.status(404).json("Quantidade em estoque insuficiente para realizar o pedido.")
+        }
+
+        next();
+
+    } catch (error) {
+        return res.status(400).json({ mensagem: error.message })
+    }
+
+
+
+}
+
+module.exports = {
+    validarCamposPedidos,
+    validarProdutos
+};

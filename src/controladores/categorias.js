@@ -1,4 +1,4 @@
-const knex = require('../conexao/conexaopg');
+const knex = require('../servicos/conexaopg');
 
 const listarCategorias = async (req, res) => {
 
@@ -7,7 +7,7 @@ const listarCategorias = async (req, res) => {
         res.json(categorias);
 
     } catch (error) {
-        res.status(500).json({ message: "Erro interno do servidor." });
+        res.status(400).json({ mensagem: error.message });
     }
 };
 
