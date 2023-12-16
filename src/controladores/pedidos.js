@@ -1,6 +1,5 @@
 const transport = require("../servicos/nodemailer");
 const knex = require("../servicos/conexaopg");
-const { cliente } = require("../filtros/validarCadastroPedidos")
 
 const cadastrarPedido = async (req, res) => {
     const { cliente_id, observacao, pedido_produtos } = req.body;
@@ -59,45 +58,46 @@ const listarPedidos = async (req, res) => {
     const { cliente_id } = req.query;
 
     try {
+        let pedidos = [];
+
         if (cliente_id) {
-            const pedido = await knex("pedidos").where({ cliente_id })
-            if (!pedido[0]) {
+            pedidos = await knex("pedidos").where({ cliente_id });
+
+            if (!pedidos[0]) {
                 return res.status(404).json({ mensagem: "Pedido não encontrado." });
             }
-            const pedido_produtos = await knex("pedido_produtos").where({ pedido_id: pedido[0].id })
-            return res.status(200).json({ pedido, pedido_produtos })
+        } else {
+            pedidos = await knex("pedidos");
         }
 
-        const pedidos = await knex("pedidos")
-        const pedido_produtos = await knex("pedido_produtos")
+        const pedidoIds = [];
+        const pedido_produtos = await knex("pedido_produtos");
 
-        // const query = await knex('pedidos')
-        //     .select('pedidos.id', 'pedidos.valor_total', 'pedidos.observacao', 'pedidos.cliente_id')
-        //     .leftJoin('pedido_produtos', 'pedidos.id', 'pedido_produtos.pedido_id');
-        // console.log(query)
+        for (const pedido of pedidos) {
+            for (const produto of pedido_produtos) {
+                if (produto.pedido_id === pedido.id) {
+                    pedidoIds.push(pedido.id);
+                    break;
+                }
+            }
+        }
 
-        // const pedidos = query;
+        const resultados = [];
 
-        // const pedidoFormatado = pedidos.map((pedido) => ({
-        //     pedido: {
-        //         id: pedido.id,
-        //         valor_total: pedido.valor_total,
-        //         observacao: pedido.observacao,
-        //         cliente_id: pedido.cliente_id,
-        //     },
-        //     pedido_produtos: pedidos
-        //         .filter((p) => p.id === pedido.id)
-        //         .map((p) => ({
-        //             id: p.pedido_produtos.id,
-        //             quantidade_produto: p.pedido_produtos.quantidade_produto,
-        //             valor_produto: p.pedido_produtos.valor_produto,
-        //             pedido_id: p.pedido_produtos.pedido_id,
-        //             produto_id: p.pedido_produtos.produto_id,
-        //         })),
-        // }));
-        // console.log(pedidoFormatado)
+        for (const pedido of pedidos) {
+            const produtosDoPedido = [];
 
-        res.status(200).json({ pedidos, pedido_produtos });
+            for (const produto of pedido_produtos) {
+                if (produto.pedido_id === pedido.id) {
+                    produtosDoPedido.push(produto);
+                }
+            }
+
+            resultados.push({ pedido, pedido_produtos: produtosDoPedido });
+        }
+
+        return res.status(200).json(resultados);
+
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
