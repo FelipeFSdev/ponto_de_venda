@@ -2,22 +2,25 @@ const knex = require("../servicos/conexaopg");
 
 const validarCamposPedidos = async (req, res, next) => {
     const { cliente_id, observacao, pedido_produtos } = req.body;
-    const { quantidade_produto, produto_id } = pedido_produtos[0];
+    // const { quantidade_produto, produto_id } = pedido_produtos[0];
 
     if (!cliente_id) {
         return res.status(404).json({ mensagem: "É necessário informar o ID do cliente." });
     }
-    if (!produto_id) {
-        return res.status(400).json({ mensagem: "É necessário informar o ID do produto." });
-    }
     if (!observacao) {
         return res.status(400).json({ mensagem: "É necessário informar a observação do pedido." })
     }
-    if (!quantidade_produto) {
-        return res.status(400).json({ mensagem: "É necessário informar a quantidade do produto." });
-    }
-    if (quantidade_produto < 0) {
-        return res.status(400).json({ mensagem: "Valor inválido. Insira um númerio maior que zero." })
+    for (const pedido_produto of pedido_produtos) {
+        const { quantidade_produto, produto_id } = pedido_produto
+        if (!produto_id) {
+            return res.status(400).json({ mensagem: "É necessário informar o ID do produto." });
+        }
+        if (!quantidade_produto) {
+            return res.status(400).json({ mensagem: "É necessário informar a quantidade do produto." });
+        }
+        if (quantidade_produto < 0) {
+            return res.status(400).json({ mensagem: "Valor inválido. Insira um númerio maior que zero." })
+        }
     }
     next();
 };
