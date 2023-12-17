@@ -1,4 +1,4 @@
-const knex = require('../conexao/conexaopg');
+const knex = require('../servicos/conexaopg');
 
 const cadastrarCliente = async (req, res) => {
     const { nome, email, cpf } = req.body;
@@ -10,9 +10,9 @@ const cadastrarCliente = async (req, res) => {
             cpf,
         }).returning("*");
 
-        return res.status(201).json(cliente);
+        return res.status(201).json(cliente[0]);
     } catch (error) {
-        return res.status(500).json({ mensagem: "Erro interno do servidor." });
+        return res.status(400).json({ mensagem: error.message });
     }
 };
 

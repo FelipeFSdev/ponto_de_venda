@@ -17,7 +17,7 @@ const validarCamposProdutos = (req, res, next) => {
         return res.status(400).json({ mensagem: "Valor inválido. Insira um número maior que zero." });
     }
     if (quantidade_estoque < 0) {
-        return res.status(400).json({ mensagem: "Quantidade de estoque inválida. Insira um númerio maior que zero." });
+        return res.status(400).json({ mensagem: "Valor inválido. Insira um númerio maior que zero." });
     }
 
     next();
