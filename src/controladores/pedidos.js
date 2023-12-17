@@ -3,56 +3,68 @@ const knex = require("../servicos/conexaopg");
 
 const cadastrarPedido = async (req, res) => {
     const { cliente_id, observacao, pedido_produtos } = req.body;
-    const { quantidade_produto, produto_id } = pedido_produtos[0];
     const { usuario } = req;
 
     try {
         const cliente = await knex("clientes").where({ id: cliente_id }).first();
-        const valorProduto = await knex("produtos").where({ id: produto_id }).select("valor").first();
-        const valor_total = valorProduto.valor * quantidade_produto;
 
         if (!cliente) {
             return res.status(404).json("Cliente não encontrado.");
         }
 
-        const estoqueProduto = await knex("produtos")
-            .where({ id: produto_id })
-            .select("quantidade_estoque")
-            .first();
-        const estoqueFinal = estoqueProduto.quantidade_estoque - quantidade_produto;
+        let valor_total = 0;
+        const produtosDoPedido = [];
 
-        await knex("produtos").where({ id: produto_id }).update({
-            quantidade_estoque: estoqueFinal
-        })
+        for (const pedido_produto of pedido_produtos) {
+            const { quantidade_produto, produto_id } = pedido_produto;
+
+            const valorProduto = await knex("produtos").where({ id: produto_id }).select("valor").first();
+            const valor_produto = valorProduto.valor * quantidade_produto;
+            valor_total += valor_produto;
+
+            const estoqueProduto = await knex("produtos")
+                .where({ id: produto_id })
+                .select("quantidade_estoque")
+                .first();
+            const estoqueFinal = estoqueProduto.quantidade_estoque - quantidade_produto;
+
+            await knex("produtos").where({ id: produto_id }).update({
+                quantidade_estoque: estoqueFinal
+            });
+
+            produtosDoPedido.push({
+                produto_id,
+                quantidade_produto,
+                valor_produto
+            });
+        }
 
         const novoPedido = await knex("pedidos")
             .insert({ cliente_id, observacao, valor_total })
             .returning('*');
 
-        await knex("pedido_produtos").insert({
-            pedido_id: novoPedido[0].id,
-            produto_id,
-            quantidade_produto,
-            valor_produto: valorProduto.valor
-        });
+        for (const produtoDoPedido of produtosDoPedido) {
+            produtoDoPedido.pedido_id = novoPedido[0].id;
+        }
+
+        await knex("pedido_produtos").insert(produtosDoPedido);
 
         transport.sendMail({
-            from: `${usuario.nome} < ${usuario.email}>`,
-            to: `${cliente.nome} < ${cliente.email}>`,
+            from: `${usuario.nome} <${usuario.email}>`,
+            to: `${cliente.nome} <${cliente.email}>`,
             subject: "Pedido efetuado com sucesso.",
-            text:
-                `Olá, ${cliente.nome}. Me chamo ${usuario.nome} e venho, através desse email,
-            informar que seu pedido já foi recebido pela nossa equipe. Estamos fazendo a separação
-            dos produtos e enviaremos seu pedido o mais breve possível. Obrigado pela preferência! `,
+            text: `Olá, ${cliente.nome}. Me chamo ${usuario.nome} e venho, através desse email,
+                informar que seu pedido já foi recebido pela nossa equipe. Estamos fazendo a separação
+                dos produtos e enviaremos seu pedido o mais breve possível. Obrigado pela preferência! `,
         });
 
-
         return res.status(201).json(novoPedido);
-    }
-    catch (error) {
+    } catch (error) {
         return res.status(400).json(error.message);
     }
 };
+
+
 
 const listarPedidos = async (req, res) => {
     const { cliente_id } = req.query;
