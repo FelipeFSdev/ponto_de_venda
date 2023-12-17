@@ -9,7 +9,7 @@ const cadastrarPedido = async (req, res) => {
         const cliente = await knex("clientes").where({ id: cliente_id }).first();
 
         if (!cliente) {
-            return res.status(404).json("Cliente não encontrado.");
+            return res.status(404).json({ mensagem: "Cliente não encontrado." });
         }
 
         let valor_total = 0;
